@@ -1,0 +1,148 @@
+<!DOCTYPE html>  
+<html>  
+  <head>  
+    <title>Employee CV</title>  
+    <style>    
+      body {    
+          font-family: Arial, sans-serif;    
+          background-color: #b9d9f4;    
+          margin: 0;    
+          padding: 0;    
+      }    
+      .cv {    
+          max-width: 600px;    
+          margin: 50px auto;    
+          padding: 20px;    
+          background-color: #ecf1f3;    
+          border: 1px solid #ccc;    
+          border-radius: 5px;    
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);    
+      }    
+      .cv h1 {    
+          font-size: 24px;    
+          margin-bottom: 20px;    
+          text-align: center;    
+          color: #333;    
+      }    
+      .cv p {    
+          margin: 10px 0;    
+          line-height: 1.5;    
+      }    
+      .cv strong {    
+          font-weight: bold;    
+      }    
+      #noContent {    
+          color: red;    
+          font-weight: bold;    
+          margin-top: 20px;    
+          text-align: center;    
+      }    
+  </style>    
+     
+   
+  </head>  
+  <body>  
+    <div class="cv">  
+      <div id="noContent" style="display: none">No Data Found</div>  
+      <p>  
+        <strong id="email2" style="display: none">Email:</strong>  
+        <span id="email" style="display: none"></span>  
+      </p>  
+      <p>  
+        <strong id="leaveStartDate2" style="display: none">Leave Start Date:</strong>  
+        <span id="leaveStartDate" style="display: none"></span>  
+      </p>  
+      <p>  
+        <strong id="leaveEndDate2" style="display: none">Leave End Date:</strong>  
+        <span id="leaveEndDate" style="display: none"></span>  
+      </p>  
+      <p>  
+        <strong id="reason2" style="display: none">Reason:</strong>  
+        <span id="reason" style="display: none"></span>  
+      </p>  
+      <p>  
+        <strong id="status2" style="display: none">Status:</strong>  
+        <span id="status" style="display: none"></span>  
+      </p>  
+    </div>  
+  
+    <script>  
+      function getEmployeeId() {  
+        let EmployeeId = JSON.parse(localStorage.getItem("Employee")).employeeid;  
+        console.log(EmployeeId);
+        const API_URL =  
+          "https://0k214j9xf6.execute-api.us-east-1.amazonaws.com/production";  
+        let getData = [];  
+  
+        async function makeGetRequest(endpoint) {  
+          try {  
+            const response = await fetch(`${API_URL}/${endpoint}`, {  
+              method: "GET",  
+              headers: {  
+                "Content-Type": "application/json",  
+              },  
+            });  
+  
+            if (!response.ok) {  
+              throw new Error("Request failed");  
+            }  
+  
+            getData = await response.json();  
+          } catch (error) {  
+            console.error("Error fetching data:", error);  
+          }  
+        }  
+  
+        async function showInfo() {  
+          try {  
+            await makeGetRequest(`UserLeaves?employee_id=${EmployeeId}`);  
+  
+            if (getData) {  
+              document.getElementById("noContent").style.display = "none";  
+              document.getElementById("email").innerText = getData.Email;  
+              document.getElementById("email2").style.display = "block";  
+              document.getElementById("email").style.display = "inline";  
+              document.getElementById("leaveStartDate").innerText =  
+                getData.LeaveStartDate;  
+              document.getElementById("leaveStartDate2").style.display = "block";  
+              document.getElementById("leaveStartDate").style.display = "inline";  
+              document.getElementById("leaveEndDate").innerText =  
+                getData.LeaveEndDate;  
+              document.getElementById("leaveEndDate2").style.display = "block";  
+              document.getElementById("leaveEndDate").style.display = "inline";  
+              document.getElementById("reason").innerText = getData.Reason;  
+              document.getElementById("reason2").style.display = "block";  
+              document.getElementById("reason").style.display = "inline";  
+              document.getElementById("status").innerText = getData.Status;  
+              document.getElementById("status2").style.display = "block";  
+              document.getElementById("status").style.display = "inline";  
+            } else {  
+              document.getElementById("email").innerText = "";  
+              document.getElementById("leaveStartDate").innerText = "";  
+              document.getElementById("leaveEndDate").innerText = "";  
+              document.getElementById("reason").innerText = "";  
+              document.getElementById("status").innerText = "";  
+  
+              document.getElementById("noContent").style.display = "block";  
+              document.getElementById("email2").style.display = "none";  
+              document.getElementById("email").style.display = "none";  
+              document.getElementById("leaveStartDate2").style.display = "none";  
+              document.getElementById("leaveStartDate").style.display = "none";  
+              document.getElementById("leaveEndDate2").style.display = "none";  
+              document.getElementById("leaveEndDate").style.display = "none";  
+              document.getElementById("reason2").style.display = "none";  
+              document.getElementById("reason").style.display = "none";  
+              document.getElementById("status2").style.display = "none";  
+              document.getElementById("status").style.display = "none";  
+            }  
+          } catch (error) {  
+            console.error("Error displaying employee info:", error);  
+          }  
+        }  
+  
+        showInfo();  
+      }  
+      getEmployeeId();  
+    </script>  
+  </body>  
+</html>  

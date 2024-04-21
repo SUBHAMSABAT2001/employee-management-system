@@ -1,0 +1,198 @@
+<!DOCTYPE html>  
+<html>  
+  <head>  
+    <title>Employee CV</title>  
+    <style>    
+      body {    
+          font-family: Arial, sans-serif;    
+          background-color: #b1cce4; /* Update the background color to a slight sky color */    
+          margin: 0;    
+          padding: 0;    
+      }    
+      .cv {    
+          max-width: 600px;    
+          margin: 50px auto;    
+          padding: 20px;    
+          background-color: #7babc5;    
+          border: 1px solid #ccc;    
+          border-radius: 5px;    
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);    
+      }    
+      .cv img {    
+          width: 150px;    
+          height: 150px;    
+          border-radius: 50%;    
+          margin-bottom: 20px;    
+      }    
+      .cv h1 {    
+          font-size: 24px;    
+          margin-bottom: 10px;    
+      }    
+      .cv p {    
+          margin: 5px 0;    
+      }    
+      .cv strong {    
+          font-weight: bold;    
+      }    
+      .cv button {    
+          background-color: #4caf50;    
+          color: white;    
+          padding: 10px 20px;    
+          border: none;    
+          border-radius: 4px;    
+          cursor: pointer;    
+          margin-top: 10px;    
+      }    
+      .cv a {    
+          text-decoration: none;    
+      }    
+      .cv a button {    
+          background-color: #404aa3;    
+      }    
+      .cv a button:hover {    
+          background-color: #1d637a;    
+      }    
+      .cv #noContent {    
+          color: red;    
+          font-weight: bold;    
+          margin-top: 10px;    
+      }    
+      /* Positioning */    
+      .cv .button-container {    
+          display: flex;    
+          justify-content: space-between;    
+          margin-bottom: 20px;    
+      }    
+      .cv .button-container button {    
+          flex: 1;    
+          margin-right: 10px;    
+      }    
+  </style>    
+    
+  </head>  
+  <body>  
+    <div class="cv">  
+      <div id="noContent" style="display: none">No Data Found</div>  
+      <div class="button-container">  
+        <a href="https://finalbucketcreate.s3.amazonaws.com/LeaveApplication.html"  
+          ><button  
+            onclick="getEmployeeInfo()"  
+            id="Application"  
+            style="display: none"  
+          >  
+            Leave Application  
+          </button></a  
+        >  
+        <a href="https://finalbucketcreate.s3.amazonaws.com/page.html"  
+          ><button>Leave details</button></a  
+        >  
+      </div>  
+      <img  
+        src=""  
+        alt="Profile Picture"  
+        id="profilePicture"  
+        style="display: none"  
+      />  
+      <h1 id="name" style="display: none"></h1>  
+      <p>  
+        <strong id="employeeId2" style="display: none">Employee ID:</strong>  
+        <span id="employeeId" style="display: none"></span>  
+      </p>  
+      <p id="city2" style="display: none">  
+        <strong>City:</strong> <span id="city" style="display: none"></span>  
+      </p>  
+      <p>  
+        <strong id="email2" style="display: none">Email:</strong>  
+        <span id="email" style="display: none"></span>  
+      </p>  
+      <p>  
+        <strong id="phone2" style="display: none">Phone:</strong>  
+        <span id="phone" style="display: none"></span>  
+      </p>  
+      <p>  
+        <strong id="post2" style="display: none">Post:</strong>  
+        <span id="post" style="display: none"></span>  
+      </p>  
+      <p>  
+        <strong id="startDate2" style="display: none">Start Date:</strong>  
+        <span id="startDate" style="display: none"></span>  
+      </p>  
+    </div>  
+  
+    <script>  
+      function getEmployeeInfo() {  
+        async function showEmployeeInfo() {  
+          try {  
+            let employee = JSON.parse(localStorage.getItem("Employee"));  
+  
+            if (employee) {  
+              // Application  
+              document.getElementById("Application").style.display = "block";  
+  
+              document.getElementById("noContent").style.display = "none";  
+              document.getElementById("profilePicture").src = employee.picture;  
+              document.getElementById("profilePicture").style.display = "block";  
+              document.getElementById("name").innerText = employee.employeeName;  
+              document.getElementById("name").style.display = "block";  
+              document.getElementById("employeeId").innerText =  
+                employee.employeeid;  
+              document.getElementById("employeeId2").style.display = "block";  
+              document.getElementById("employeeId").style.display = "inline";  
+              document.getElementById("city").innerText = employee.employeeCity;  
+              document.getElementById("city2").style.display = "block";  
+              document.getElementById("city").style.display = "inline";  
+              document.getElementById("email").innerText =  
+                employee.employeeEmail;  
+              document.getElementById("email2").style.display = "block";  
+              document.getElementById("email").style.display = "inline";  
+              document.getElementById("phone").innerText =  
+                employee.employeePhone;  
+              document.getElementById("phone2").style.display = "block";  
+              document.getElementById("phone").style.display = "inline";  
+              document.getElementById("post").innerText = employee.employeePost;  
+              document.getElementById("post2").style.display = "block";  
+              document.getElementById("post").style.display = "inline";  
+              document.getElementById("startDate").innerText =  
+                employee.startDate;  
+              document.getElementById("startDate2").style.display = "block";  
+              document.getElementById("startDate").style.display = "inline";  
+            } else {  
+              // Resetting all fields  
+              document.getElementById("profilePicture").src = "";  
+              document.getElementById("name").innerText = "";  
+              document.getElementById("employeeId").innerText = "";  
+              document.getElementById("city").innerText = "";  
+              document.getElementById("email").innerText = "";  
+              document.getElementById("phone").innerText = "";  
+              document.getElementById("post").innerText = "";  
+              document.getElementById("startDate").innerText = "";  
+  
+              // Hide HTML  
+              document.getElementById("Application").style.display = "none";  
+              document.getElementById("noContent").style.display = "block";  
+              document.getElementById("profilePicture").style.display = "none";  
+              document.getElementById("name").style.display = "none";  
+              document.getElementById("employeeId2").style.display = "none";  
+              document.getElementById("employeeId").style.display = "none";  
+              document.getElementById("city2").style.display = "none";  
+              document.getElementById("city").style.display = "none";  
+              document.getElementById("email2").style.display = "none";  
+              document.getElementById("email").style.display = "none";  
+              document.getElementById("phone2").style.display = "none";  
+              document.getElementById("phone").style.display = "none";  
+              document.getElementById("post2").style.display = "none";  
+              document.getElementById("post").style.display = "none";  
+              document.getElementById("startDate2").style.display = "none";  
+              document.getElementById("startDate").style.display = "none";  
+            }  
+          } catch (error) {  
+            console.error("Error displaying employee info:", error);  
+          }  
+        }  
+  
+        showEmployeeInfo();  
+      }  
+      getEmployeeInfo();  
+    </script>  
+  </body>  
+</html>  

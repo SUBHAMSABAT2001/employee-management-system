@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>  
+<html>  
+  <head>  
+    <title>Employee CV</title>  
+    <style>  
+      body {  
+        font-family: Arial, sans-serif;    
+          background-color: #c6def3; /* Update the background color to a slight sky color */    
+          margin: 0;    
+          padding: 0; 
+      }  
+  
+      .cv {  
+        max-width: 600px;  
+        margin: 50px auto;  
+        padding: 20px;  
+        background-color: #fff;  
+        border: 1px solid #ccc;  
+        border-radius: 5px;  
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+      }  
+  
+      .cv img {  
+        width: 150px;  
+        height: 150px;  
+        border-radius: 50%;  
+        margin-bottom: 20px;  
+      }  
+  
+      .cv h1 {  
+        font-size: 24px;  
+        margin-bottom: 10px;  
+      }  
+  
+      .cv p {  
+        margin: 5px 0;  
+      }  
+  
+      .cv strong {  
+        font-weight: bold;  
+      }  
+  
+      /* New styles */  
+      .cv input[type="text"],  
+      .cv input[type="password"] {  
+        width: 100%;  
+        padding: 10px;  
+        border: 1px solid #ccc;  
+        border-radius: 4px;  
+        box-sizing: border-box;  
+        margin-bottom: 10px;  
+      }  
+  
+      .cv button {  
+        background-color: #4caf50;  
+        color: white;  
+        padding: 10px 20px;  
+        border: none;  
+        border-radius: 4px;  
+        cursor: pointer;  
+      }  
+  
+      .cv button:hover {  
+        background-color: #45a049;  
+      }  
+  
+      .cv a {  
+        text-decoration: none;  
+      }  
+  
+      .cv a button {  
+        background-color: #008cba;  
+      }  
+  
+      .cv a button:hover {  
+        background-color: #007095;  
+      }  
+  
+      .cv #noContent {  
+        color: red;  
+        font-weight: bold;  
+        margin-top: 10px;  
+      }  
+    </style>  
+  </head>  
+  <body>  
+    <div class="cv">
+      <div id="noContent" style="display: none">No Data Found</div>
+      
+      <p>Please Enter Employee Email</p>
+      <p><input type="text" id="emailInput" /></p>
+      <p>Please Enter your password</p>
+      <p><input type="password" id="idInput" /></p>
+      <p><button onclick="getEmployeeInfo()">Submit</button></p>
+      <a href="https://finalbucketcreate.s3.amazonaws.com/LeaveApplication.html"
+        ><button
+          onclick="getEmployeeInfo()"
+          id="Application"
+          style="display: none"
+        >
+          Leave Application
+        </button></a
+      >
+      <img
+        src=""
+        alt="Profile Picture"
+        id="profilePicture"
+        style="display: none"
+      />
+      <h1 id="name" style="display: none"></h1>
+      <p>
+        <strong id="employeeId2" style="display: none">Employee ID:</strong>
+        <span id="employeeId" style="display: none"></span>
+      </p>
+      <p id="city2" style="display: none">
+        <strong>City:</strong> <span id="city" style="display: none"></span>
+      </p>
+      <p>
+        <strong id="email2" style="display: none">Email:</strong>
+        <span id="email" style="display: none"></span>
+      </p>
+      <p>
+        <strong id="phone2" style="display: none">Phone:</strong>
+        <span id="phone" style="display: none"></span>
+      </p>
+      <p>
+        <strong id="post2" style="display: none">Post:</strong>
+        <span id="post" style="display: none"></span>
+      </p>
+      <p>
+        <strong id="startDate2" style="display: none">Start Date:</strong>
+        <span id="startDate" style="display: none"></span>
+      </p>
+    </div>
+
+    <script>
+      function getEmployeeInfo() {
+        let employeeId = document.getElementById("idInput").value;
+        let employeeEmail = document.getElementById("emailInput").value;
+
+        const API_URL =
+          "https://0k214j9xf6.execute-api.us-east-1.amazonaws.com/production";
+        let employeeData = [];
+
+        async function makeGetRequest(endpoint) {
+          try {
+            const response =
+              !!employeeId &&
+              (await fetch(`${API_URL}/${endpoint}`, {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }));
+            employeeData = (await response.json()).employees;
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        }
+
+        async function showEmployeeInfo() {
+          try {
+            await makeGetRequest("employees");
+
+            const employee = employeeData.find(
+              (element) =>
+                element.employeeid === employeeId &&
+                element.employeeEmail === employeeEmail
+            );
+            if (employee){
+              console.log(employee);
+              localStorage.setItem("Employee",JSON.stringify(employee));
+              window.location="https://finalbucketcreate.s3.amazonaws.com/nextpage.html";
+            }
+             else {
+              // Resetting all fields
+              document.getElementById("profilePicture").src = "";
+              document.getElementById("name").innerText = "";
+              document.getElementById("employeeId").innerText = "";
+              document.getElementById("city").innerText = "";
+              document.getElementById("email").innerText = "";
+              document.getElementById("phone").innerText = "";
+              document.getElementById("post").innerText = "";
+              document.getElementById("startDate").innerText = "";
+
+              // Hide HTML
+              document.getElementById("Application").style.display = "none";
+              document.getElementById("noContent").style.display = "block";
+              document.getElementById("profilePicture").style.display = "none";
+              document.getElementById("name").style.display = "none";
+              document.getElementById("employeeId2").style.display = "none";
+              document.getElementById("employeeId").style.display = "none";
+              document.getElementById("city2").style.display = "none";
+              document.getElementById("city").style.display = "none";
+              document.getElementById("email2").style.display = "none";
+              document.getElementById("email").style.display = "none";
+              document.getElementById("phone2").style.display = "none";
+              document.getElementById("phone").style.display = "none";
+              document.getElementById("post2").style.display = "none";
+              document.getElementById("post").style.display = "none";
+              document.getElementById("startDate2").style.display = "none";
+              document.getElementById("startDate").style.display = "none";
+            }
+          } catch (error) {
+            console.error("Error displaying employee info:", error);
+          }
+        }
+
+        showEmployeeInfo();
+      }
+    </script> 
+  </body>  
+</html>  

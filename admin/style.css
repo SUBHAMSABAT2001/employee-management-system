@@ -1,0 +1,167 @@
+table tr td{
+    vertical-align: middle;
+}
+    
+  .newUser, .signout {  
+    display: inline-block;  
+    vertical-align: middle;  
+  }  
+  
+td button{
+    margin: 5px;
+}
+
+td button i{
+    font-size: 20px;
+}
+
+body {  
+    background-color: #b3cce5;  
+}  
+
+.p-3 {  
+    margin: 20px;  
+}  
+
+.newUser,  
+.signout {  
+    margin-bottom: 10px;  
+}  
+
+.table {  
+    background-color: #fff;  
+}  
+
+.imgholder {  
+    text-align: center;  
+    margin-bottom: 20px;  
+}  
+
+.img {  
+    border-radius: 50%;  
+}  
+
+.inputField {  
+    margin-top: 20px;  
+}  
+
+.modal-title {  
+    font-size: 24px;  
+    font-weight: bold;  
+}  
+
+.modal-body {  
+    padding: 20px;  
+}  
+
+.modal-footer {  
+    justify-content: space-between;  
+}  
+
+.btn-primary {  
+    background-color: #007bff;  
+    border-color: #007bff;  
+}  
+
+.btn-primary:hover {  
+    background-color: #0069d9;  
+    border-color: #0062cc;  
+}  
+
+.btn-secondary {  
+    background-color: #6c757d;  
+    border-color: #6c757d;  
+}  
+
+.btn-secondary:hover {  
+    background-color: #5a6268;  
+    border-color: #545b62;  
+}  
+.modal-header{
+    background: #0d6efd;
+    color: #fff;
+}
+
+.modal-body form {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0;
+}
+
+.modal-body form .imgholder{
+    width: 200px;
+    height: 200px;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.imgholder .upload{
+    position: absolute;
+    bottom: 0;
+    left: 10;
+    width: 100%;
+    height: 100px;
+    background: rgba(0,0,0,0.3);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.upload i{
+    color: #fff;
+    font-size: 35px;
+}
+
+.imgholder:hover .upload{
+    display: flex;
+}
+
+.imgholder .upload input{
+    display: none;
+}
+
+.modal-body form .inputField{
+    flex-basis: 68%;
+    border-left: 5px groove blue;
+    padding-left: 20px;
+}
+
+form .inputField > div{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+form .inputField > div label{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+#userForm form .inputField > div label::after{
+    content: "*";
+    color: red;
+}
+
+form .inputField > div input{
+    width: 75%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    background: transparent;
+    border-bottom: 2px solid blue;
+}
+
+.modal-footer .submit{
+    font-size: 18px;
+}
+
+
+#readData form .inputField > div input{
+    color: #000;
+    font-size: 18px;
+}

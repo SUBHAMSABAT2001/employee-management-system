@@ -1,0 +1,121 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Leave Application</title>  
+<style>    
+    body {    
+        font-family: Arial, sans-serif;    
+        background-color:#c6def3;    
+        margin: 0;    
+        padding: 0;    
+        display: flex;    
+        justify-content: center;    
+        align-items: center;    
+        height: 100vh;    
+    }    
+    #leaveForm {    
+        background-color: #fff;    
+        padding: 20px;    
+        border-radius: 10px;    
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    
+        width: 400px;    
+        max-width: 90%;    
+    }    
+    h1 {    
+        text-align: center;    
+        color: #333;    
+        margin-bottom: 20px;    
+    }    
+    label {    
+        display: block;    
+        margin-bottom: 5px;    
+        color: #555;    
+    }    
+    input[type="text"],    
+    input[type="date"],    
+    input[type="email"],    
+    textarea {    
+        width: 100%;    
+        padding: 10px;    
+        margin-bottom: 15px;    
+        border: 1px solid #ccc;    
+        border-radius: 5px;    
+    }    
+    textarea {    
+        resize: vertical;    
+    }    
+    button {    
+        background-color: #007bff;    
+        color: #fff;    
+        border: none;    
+        border-radius: 5px;    
+        padding: 10px 20px;    
+        cursor: pointer;    
+        width: 100%;    
+    }    
+    button:hover {    
+        background-color: #0056b3;    
+    }    
+</style>    
+ 
+</head>  
+<body>  
+<h1>Leave Application</h1>  
+<form id="leaveForm" onsubmit="submitLeaveRequest()">  
+<label for="employee_id">Employee ID:</label>  
+<input type="text" id="employee_id" required>  
+<label for="leave_start_date">Leave Start Date:</label>  
+<input type="date" id="leave_start_date" required>  
+<label for="leave_end_date">Leave End Date:</label>  
+<input type="date" id="leave_end_date" required>  
+<label for="sender_email">Email:</label>  
+<input type="email" id="email" required>  
+<label for="reason">Reason:</label>  
+<textarea id="reason" required></textarea>  
+<button type="submit">Submit Leave Request</button>  
+</form>  
+<script>  
+        const API_ENDPOINT_URL='https://0k214j9xf6.execute-api.us-east-1.amazonaws.com/production'
+        async function submitLeaveRequest() {  
+            event.preventDefault(); // Prevent form submission  
+            // Get form data  
+            const employeeId = document.getElementById('employee_id').value;  
+            const leaveStartDate = document.getElementById('leave_start_date').value;  
+            const leaveEndDate = document.getElementById('leave_end_date').value;  
+            const email = document.getElementById('email').value;  
+            const reason = document.getElementById('reason').value;  
+            // Create request body  
+            const requestBody = {  
+                EmployeeID: employeeId,  
+                LeaveStartDate: leaveStartDate,  
+                LeaveEndDate: leaveEndDate,  
+                Email: email,  
+                Reason: reason  
+            };  
+            // Send POST request to API endpoint  
+            fetch(`${API_ENDPOINT_URL}`+"/UserLeaves", {  
+                method: 'POST',  
+                headers: {  
+                    'Content-Type': 'application/json'  
+                },  
+                body: JSON.stringify(requestBody)  
+            })  
+            .then(response => response.json())  
+            .then(data => {  
+                console.log('Leave request submitted successfully:', data);  
+                // Handle success response  
+                //refresh
+                
+            })  
+            .catch(error => {  
+                console.error('Error submitting leave request:', error);  
+                // Handle error response  
+            });  
+            location.reload();
+        } 
+ 
+</script>  
+</body>  
+</html> 
