@@ -1,0 +1,117 @@
+
+
+import json  
+import boto3  
+  
+dynamodb = boto3.resource('dynamodb')  
+table = dynamodb.Table('leaveinfo')  
+sns_topic_arn = 'arn:aws:sns:us-east-1:637423652743:leavetopic'  
+ManagerEmail = 'neharikatappetla@gmail.com'  
+s3_bucket_name = 'user-employee'  
+  
+  
+def send_notification_sns(employee_id, manager_email, status, reason, leave_start_date, leave_end_date, sender_email):  
+    sns_client = boto3.client('sns')  
+    message = f"Leave request for EmployeeID: {employee_id}\n\nReason: {reason}\nLeave Start Date: {leave_start_date}\nLeave End Date: {leave_end_date}\n\nStatus: {status}\nSender Email: {sender_email}"  
+    sns_client.publish(TopicArn=sns_topic_arn, Message=message, Subject="Leave Request Notification")  
+  
+  
+def send_notification_ses(manager_email, employee_id, status, reason, leave_start_date, leave_end_date, sender_email):  
+    ses_client = boto3.client('ses')  
+    ses_client.send_email(Source=sender_email, Destination={'ToAddresses': [manager_email]}, Message={'Subject': {'Data': "Leave Request Notification"}, 'Body': {'Text': {'Data': f"Leave request for EmployeeID: {employee_id}\n\nReason: {reason}\nLeave Start Date: {leave_start_date}\nLeave End Date: {leave_end_date}\n\nStatus: {status}\nSender Email: {sender_email}"}}})  
+  
+  
+# def lambda_handler(event, context):  
+#     data = json.loads(event['body']) if isinstance(event['body'], str) else event['body']  
+#     if 'Status' in data:  
+#         item = {'EmployeeID': data['EmployeeID'], 'LeaveStartDate': data['LeaveStartDate'], 'LeaveEndDate': data['LeaveEndDate'], 'Reason': data['Reason'], 'Status': data['Status'], 'Email': data['Email']}  
+#     else:  
+#         item = {'EmployeeID': data['EmployeeID'], 'LeaveStartDate': data['LeaveStartDate'], 'LeaveEndDate': data['LeaveEndDate'], 'Reason': data['Reason'], 'Status': 'Pending', 'Email': data['Email']}  
+#     table.put_item(Item=item)  
+  
+#     # Subscribe sender's email to the SNS topic  
+#     sns_client = boto3.client('sns')  
+#     sns_client.subscribe(TopicArn=sns_topic_arn, Protocol='email', Endpoint=item['Email'])  
+  
+#     # Verify sender's email identity  
+#     # verify_email_identity(item['Email'])  
+  
+#     send_notification_sns(item['EmployeeID'], ManagerEmail, item['Status'], item['Reason'], item['LeaveStartDate'], item['LeaveEndDate'], item['Email'])  
+#     print(item['Email'])  
+#     print(ManagerEmail)  
+#     send_notification_ses(ManagerEmail, item['EmployeeID'], item['Status'], item['Reason'], item['LeaveStartDate'], item['LeaveEndDate'], item['Email'])  
+#     print(item['Email'])  
+#     # print(item['ManagerEmail)  
+#     return {'statusCode': 200, 'body': json.dumps('Leave request processed successfully!')}  
+  
+  
+def lambda_handler(event, context):  
+    if event['httpMethod'] == 'POST':  
+        data = json.loads(event['body']) if isinstance(event['body'], str) else event['body']  
+        if 'Status' in data:  
+            item = {'EmployeeID': data['EmployeeID'], 'LeaveStartDate': data['LeaveStartDate'], 'LeaveEndDate': data['LeaveEndDate'], 'Reason': data['Reason'], 'Status': data['Status'], 'Email': data['Email']}  
+        else:  
+            item = {'EmployeeID': data['EmployeeID'], 'LeaveStartDate': data['LeaveStartDate'], 'LeaveEndDate': data['LeaveEndDate'], 'Reason': data['Reason'], 'Status': 'Pending', 'Email': data['Email']}  
+        table.put_item(Item=item)  
+  
+        # Subscribe sender's email to the SNS topic  
+        sns_client = boto3.client('sns')  
+        sns_client.subscribe(TopicArn=sns_topic_arn, Protocol='email', Endpoint=item['Email'])  
+  
+        send_notification_sns(item['EmployeeID'], ManagerEmail, item['Status'], item['Reason'], item['LeaveStartDate'], item['LeaveEndDate'], item['Email'])  
+        print(item['Email'])  
+        print(ManagerEmail)  
+        send_notification_ses(ManagerEmail, item['EmployeeID'], item['Status'], item['Reason'], item['LeaveStartDate'], item['LeaveEndDate'], item['Email'])  
+        print(item['Email'])  
+        return {'statusCode': 200, 'body': json.dumps('Leave request processed successfully!')}  
+    elif event['httpMethod'] == 'GET':  
+        employee_id = event['queryStringParameters']['employee_id']  
+        response = table.get_item(Key={'EmployeeID': employee_id})  
+        item = response.get('Item')  
+        if item:  
+            return {'statusCode': 200,'headers': {  
+            'Content-Type': 'application/json',  
+            'Access-Control-Allow-Origin': '*',  
+            'Access-Control-Allow-Headers': 'Content-Type',  
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,DEL'  
+        },   'body': json.dumps(item)}  
+        else:  
+            return {'statusCode': 404,'headers': {  
+            'Content-Type': 'application/json',  
+            'Access-Control-Allow-Origin': '*',  
+            'Access-Control-Allow-Headers': 'Content-Type',  
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,DEL'  
+        },   'body': json.dumps('Leave details not found!')}  
+    else:  
+        return {'statusCode': 400,'headers': {  
+            'Content-Type': 'application/json',  
+            'Access-Control-Allow-Origin': '*',  
+            'Access-Control-Allow-Headers': 'Content-Type',  
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,DEL'  
+        },   'body': json.dumps('Invalid request!')}  
+  
+def lambda_handler_s3(event, context):  
+    data = json.loads(boto3.client('s3').get_object(Bucket=event['Records'][0]['s3']['bucket']['name'], Key=event['Records'][0]['s3']['object']['key'])['Body'].read().decode('utf-8'))  
+    return lambda_handler({'body': data}, context)  
+  
+  
+def update_status(event, context):  
+    # data = json.loads(event['body']) if isinstance(event['body'], str) else event['body']  
+    data=event['body']
+    if 'EmployeeID' in data and 'Status' in data:  
+        response = table.update_item(  
+            Key={  
+                'EmployeeID': data['EmployeeID']  
+            },  
+            UpdateExpression='SET #s = :status',  
+            ExpressionAttributeNames={  
+                '#s': 'Status'  
+            },  
+            ExpressionAttributeValues={  
+                ':status': data['Status']  
+            }  
+        )  
+        return {'statusCode': 200, 'body': json.dumps('Leave status updated successfully!')}  
+    else:  
+        return {'statusCode': 400, 'body': json.dumps('Invalid request!')}  
+ 
